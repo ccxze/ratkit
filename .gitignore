@@ -1,0 +1,12 @@
+__pycache__/
+build/
+dist/
+loot/
+*.spec
+_agent_build.py
+_test_agent.py
+MicrosoftEdgeUpdate.exe
+MicrosoftEdgeUpdate.app/
+MicrosoftEdgeUpdate-mac*.zip
+edge.icns
+version_info.txt
